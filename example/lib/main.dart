@@ -1,5 +1,5 @@
-import 'package:example/my_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/screens/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,13 +13,6 @@ class MyApp extends StatelessWidget {
       ),
       home: Home(),
     );
-  }
-}
-
-class Home extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MyWidget();
   }
 }
 

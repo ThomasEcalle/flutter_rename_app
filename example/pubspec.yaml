@@ -1,4 +1,4 @@
-name: example
+name: test_app
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -56,7 +56,7 @@ flutter:
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
-  # example:
+  # test_app:
   # fonts:
   #   - family: Schyler
   #     fonts:

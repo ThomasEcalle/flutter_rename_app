@@ -25,25 +25,33 @@ renameApp(String newAppName) async {
   Logger.newLine();
 
   Logger.info("Let's change all in lib !");
-  await changeAllLibFiles(config);
+  await changeAllFilesIn("lib", config);
+
+  Logger.info("Let's change all in tests !");
+  await changeAllFilesIn("test", config);
 
   var shell = Shell();
 
   await shell.run("flutter pub get");
 }
 
-changeAllLibFiles(Config config) async {
-  final Directory directory = Directory("lib");
-  final List<FileSystemEntity> files = directory.listSync(recursive: true);
-  await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
-    if (fileSystemEntity is File) {
-      await changeContentInFile(
-        fileSystemEntity.path,
-        RegExp(config.oldIdentifier),
-        config.newIdentifier,
-      );
-    }
-  });
+changeAllFilesIn(String directoryPath, Config config) async {
+  final Directory directory = Directory(directoryPath);
+  if (directory.existsSync()) {
+    final List<FileSystemEntity> files = directory.listSync(recursive: true);
+    await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
+      if (fileSystemEntity is File) {
+        await changeContentInFile(
+          fileSystemEntity.path,
+          RegExp(config.oldIdentifier),
+          config.newIdentifier,
+        );
+      }
+    });
+  } else {
+    Logger.error("Missing $directoryPath, it will be ignored");
+  }
+
 }
 
 applyContentChanges(List<RequiredChange> requiredChanges) async {
