@@ -8,12 +8,12 @@ List<RequiredChange> getFilesToModifyContent(
     RequiredChange(
       regexp: RegExp(config.oldIdentifier),
       replacement: config.newIdentifier,
-      paths: ["toto.txt"],
+      paths: ["pubspec.yaml"],
     ),
     RequiredChange(
       regexp: RegExp(config.oldAppName),
       replacement: config.newAppName,
-      paths: ["toto.txt"],
+      paths: ["pubspec.yaml"],
     ),
   ];
 }

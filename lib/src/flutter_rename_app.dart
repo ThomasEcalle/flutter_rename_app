@@ -50,11 +50,16 @@ applyContentChanges(List<RequiredChange> requiredChanges) async {
 }
 
 changeContentInFile(String filePath, RegExp regexp, String replacement) async {
-  final File file = File(filePath);
-  final String content = await file.readAsString();
-  if (content.contains(regexp)) {
-    final String newContent = content.replaceAll(regexp, replacement);
-    await file.writeAsString(newContent);
-    Logger.info("Changed file $filePath");
+  try {
+    final File file = File(filePath);
+    final String content = await file.readAsString();
+    if (content.contains(regexp)) {
+      final String newContent = content.replaceAll(regexp, replacement);
+      await file.writeAsString(newContent);
+      Logger.info("Changed file $filePath");
+    }
+  } on FileSystemException {
+    Logger.error("File $filePath does not exist on this project");
   }
+
 }
