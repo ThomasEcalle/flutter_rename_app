@@ -1,0 +1,5 @@
+import 'package:toto_et_bibu/src/utils/logger.dart';
+
+Voici un super texte ou se trouve le nom de l'application actuelle, toto et BIBU !
+
+il y a également son identifier : toto_et_bibu
