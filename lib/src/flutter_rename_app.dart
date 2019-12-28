@@ -22,14 +22,13 @@ renameApp(String newAppName) async {
 
   Logger.newLine();
   Logger.newLine();
-  Logger.newLine();
 
-  Logger.info("Let's change all in fake_src !");
-  await changeAllSrcFiles(config);
+  Logger.info("Let's change all in lib !");
+  await changeAllLibFiles(config);
 }
 
-changeAllSrcFiles(Config config) async {
-  final Directory directory = Directory("fake_src");
+changeAllLibFiles(Config config) async {
+  final Directory directory = Directory("lib");
   final List<FileSystemEntity> files = directory.listSync(recursive: true);
   await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
     if (fileSystemEntity is File) {
@@ -53,6 +52,9 @@ applyContentChanges(List<RequiredChange> requiredChanges) async {
 changeContentInFile(String filePath, RegExp regexp, String replacement) async {
   final File file = File(filePath);
   final String content = await file.readAsString();
-  final String newContent = content.replaceAll(regexp, replacement);
-  await file.writeAsString(newContent);
+  if (content.contains(regexp)) {
+    final String newContent = content.replaceAll(regexp, replacement);
+    await file.writeAsString(newContent);
+    Logger.info("Changed file $filePath");
+  }
 }
