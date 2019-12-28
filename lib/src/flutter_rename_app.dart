@@ -8,6 +8,7 @@ import 'changes/files_to_modify_content.dart';
 import 'models/config.dart';
 import 'models/required_change.dart';
 import 'utils/get_config.dart';
+import 'package:process_run/process_run.dart';
 
 renameApp(String newAppName) async {
   final Config config = await getConfig(newAppName);
@@ -25,6 +26,8 @@ renameApp(String newAppName) async {
 
   Logger.info("Let's change all in lib !");
   await changeAllLibFiles(config);
+
+  await run('flutter pub get', []);
 }
 
 changeAllLibFiles(Config config) async {
