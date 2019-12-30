@@ -1,4 +1,4 @@
-import 'package:example/screens/home.dart';
+import 'package:shoppy_app/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
