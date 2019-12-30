@@ -10,5 +10,10 @@ List<RequiredChange> getFilesToModifyContent(
       replacement: config.newDartPackageName,
       paths: ["pubspec.yaml"],
     ),
+    RequiredChange(
+      regexp: RegExp('android:label="${config.oldAppName}"'),
+      replacement: 'android:label="${config.newAppName}"',
+      paths: ["android/app/src/main/AndroidManifest.xml"],
+    ),
   ];
 }
