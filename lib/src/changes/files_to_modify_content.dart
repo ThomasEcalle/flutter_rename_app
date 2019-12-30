@@ -15,5 +15,10 @@ List<RequiredChange> getFilesToModifyContent(
       replacement: 'android:label="${config.newAppName}"',
       paths: ["android/app/src/main/AndroidManifest.xml"],
     ),
+    RequiredChange(
+      regexp: RegExp(config.oldAppName),
+      replacement: config.newAppName,
+      paths: ["ios/Runner/Info.plist"],
+    ),
   ];
 }
