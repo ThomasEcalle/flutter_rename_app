@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/screens/home.dart';
+import 'package:shoppy_app/screens/home.dart';
 
 void main() => runApp(MyApp());
 

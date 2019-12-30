@@ -6,13 +6,8 @@ List<RequiredChange> getFilesToModifyContent(
 ) {
   return [
     RequiredChange(
-      regexp: RegExp(config.oldApplicationId),
-      replacement: config.newApplicationId,
-      paths: ["pubspec.yaml"],
-    ),
-    RequiredChange(
-      regexp: RegExp(config.oldAppName),
-      replacement: config.newAppName,
+      regexp: RegExp(config.oldDartPackageName),
+      replacement: config.newDartPackageName,
       paths: ["pubspec.yaml"],
     ),
   ];

@@ -29,19 +29,17 @@ renameApp() async {
     Logger.info("Current app android package name = ${config.oldAndroidPackageName}");
     Logger.info("New app android package name: ${config.newAndroidPackageName}");
 
-    return;
-
     final List<RequiredChange> requiredChanges = getFilesToModifyContent(config);
-    applyContentChanges(requiredChanges);
+    _applyContentChanges(requiredChanges);
 
     Logger.newLine();
     Logger.newLine();
 
     Logger.info("Let's change all in lib !");
-    await changeAllFilesIn("lib", config);
+    await _changeAllImportsIn("lib", config);
 
     Logger.info("Let's change all in tests !");
-    await changeAllFilesIn("test", config);
+    await _changeAllImportsIn("test", config);
 
     var shell = Shell();
 
@@ -54,16 +52,16 @@ renameApp() async {
   }
 }
 
-changeAllFilesIn(String directoryPath, Config config) async {
+_changeAllImportsIn(String directoryPath, Config config) async {
   final Directory directory = Directory(directoryPath);
   if (directory.existsSync()) {
     final List<FileSystemEntity> files = directory.listSync(recursive: true);
     await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
       if (fileSystemEntity is File) {
-        await changeContentInFile(
+        await _changeContentInFile(
           fileSystemEntity.path,
-          RegExp(config.oldApplicationId),
-          config.newApplicationId,
+          RegExp(config.oldDartPackageName),
+          config.newDartPackageName,
         );
       }
     });
@@ -72,15 +70,15 @@ changeAllFilesIn(String directoryPath, Config config) async {
   }
 }
 
-applyContentChanges(List<RequiredChange> requiredChanges) async {
+_applyContentChanges(List<RequiredChange> requiredChanges) async {
   await Future.forEach(requiredChanges, (RequiredChange change) async {
     for (var path in change.paths) {
-      await changeContentInFile(path, change.regexp, change.replacement);
+      await _changeContentInFile(path, change.regexp, change.replacement);
     }
   });
 }
 
-changeContentInFile(String filePath, RegExp regexp, String replacement) async {
+_changeContentInFile(String filePath, RegExp regexp, String replacement) async {
   try {
     final File file = File(filePath);
     final String content = await file.readAsString();

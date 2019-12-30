@@ -1,4 +1,4 @@
-name: test_app
+name: shoppy_app
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -30,11 +30,11 @@ dev_dependencies:
     path: ../
 
 flutter_rename_app:
-  application_name: Travel App
-  bundle_id: com.ios.travel
-  application_id: com.android.travel
-  dart_package_name: travel_app
-  android_package_name: com.android.travel
+  application_name: Shoppy app
+  bundle_id: com.ios.shoppy
+  application_id: com.android.shoppy
+  dart_package_name: shoppy_app
+  android_package_name: com.android.shoppy
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -62,7 +62,7 @@ flutter:
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
-  # test_app:
+  # shoppy_app:
   # fonts:
   #   - family: Schyler
   #     fonts:
