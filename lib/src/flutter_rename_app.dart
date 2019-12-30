@@ -45,7 +45,7 @@ renameApp() async {
     Logger.info("Let's change all in tests !");
     await _changeAllImportsIn("test", config);
 
-    await _changeAndroidPackageName(config);
+    ///await _changeAndroidPackageName(config);
 
     final shell = Shell();
 

@@ -34,9 +34,9 @@ List<RequiredChange> getFilesToModifyContent(
       regexp: RegExp(config.oldAndroidPackageName),
       replacement: config.newAndroidPackageName,
       paths: [
-        "android/src/main/kotlin/${config.oldAndroidPackageName.replaceAll('.', '/')}",
-        "android/src/debug",
-        "android/src/profile",
+        "android/app/src/main/kotlin/${config.oldAndroidPackageName.replaceAll('.', '/')}",
+        "android/app/src/debug",
+        "android/app/src/profile",
       ],
       isDirectory: true,
     ),
