@@ -16,6 +16,11 @@ List<RequiredChange> getFilesToModifyContent(
       paths: ["android/app/src/main/AndroidManifest.xml"],
     ),
     RequiredChange(
+      regexp: RegExp('applicationId "${config.oldApplicationId}"'),
+      replacement: 'applicationId "${config.newApplicationId}"',
+      paths: ["android/app/build.gradle"],
+    ),
+    RequiredChange(
       regexp: RegExp(config.oldAppName),
       replacement: config.newAppName,
       paths: ["ios/Runner/Info.plist"],
