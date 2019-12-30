@@ -21,6 +21,11 @@ List<RequiredChange> getFilesToModifyContent(
       paths: ["android/app/build.gradle"],
     ),
     RequiredChange(
+      regexp: RegExp(config.oldBundleId),
+      replacement: config.newBundleId,
+      paths: ["ios/Runner.xcodeproj/project.pbxproj"],
+    ),
+    RequiredChange(
       regexp: RegExp(config.oldAppName),
       replacement: config.newAppName,
       paths: ["ios/Runner/Info.plist"],
