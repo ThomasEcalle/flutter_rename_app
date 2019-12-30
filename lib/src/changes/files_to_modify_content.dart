@@ -6,8 +6,8 @@ List<RequiredChange> getFilesToModifyContent(
 ) {
   return [
     RequiredChange(
-      regexp: RegExp(config.oldIdentifier),
-      replacement: config.newIdentifier,
+      regexp: RegExp(config.oldApplicationId),
+      replacement: config.newApplicationId,
       paths: ["pubspec.yaml"],
     ),
     RequiredChange(

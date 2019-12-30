@@ -7,7 +7,7 @@ class Utils {
     return newName.toLowerCase().replaceAll(" ", "_");
   }
 
-  static Future<String> getCurrentAppIdentifier() async {
+  static Future<String> getCurrentDartPackageName() async {
     final File file = File("pubspec.yaml");
     final String yamlString = file.readAsStringSync();
     final Map<dynamic, dynamic> yamlMap = loadYaml(yamlString);

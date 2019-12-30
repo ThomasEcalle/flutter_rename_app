@@ -7,32 +7,51 @@ import 'package:process_run/shell_run.dart';
 
 import 'changes/files_to_modify_content.dart';
 import 'models/config.dart';
+import 'models/errors.dart';
 import 'models/required_change.dart';
 import 'utils/get_config.dart';
 
-renameApp(String newAppName) async {
-  final Config config = await getConfig(newAppName);
+renameApp() async {
+  try {
+    final Config config = await getConfig();
+    Logger.info("Current app name: ${config.oldAppName}");
+    Logger.info("New name will be: ${config.newAppName}");
 
-  Logger.info("New name will be: $newAppName");
-  Logger.info("New identifier will be: ${config.newIdentifier}");
-  Logger.info("Current app identifier = ${config.oldIdentifier}");
-  Logger.info("Current app name = ${config.oldAppName}");
+    Logger.info("Current app application id = ${config.oldApplicationId}");
+    Logger.info("New application id will be: ${config.newApplicationId}");
 
-  final List<RequiredChange> requiredChanges = getFilesToModifyContent(config);
-  applyContentChanges(requiredChanges);
+    Logger.info("Current app bundle id = ${config.oldBundleId}");
+    Logger.info("New application bundle id will be: ${config.newBundleId}");
 
-  Logger.newLine();
-  Logger.newLine();
+    Logger.info("Current app dart package = ${config.oldDartPackageName}");
+    Logger.info("New app dart package: ${config.newDartPackageName}");
 
-  Logger.info("Let's change all in lib !");
-  await changeAllFilesIn("lib", config);
+    Logger.info("Current app android package name = ${config.oldAndroidPackageName}");
+    Logger.info("New app android package name: ${config.newAndroidPackageName}");
 
-  Logger.info("Let's change all in tests !");
-  await changeAllFilesIn("test", config);
+    return;
 
-  var shell = Shell();
+    final List<RequiredChange> requiredChanges = getFilesToModifyContent(config);
+    applyContentChanges(requiredChanges);
 
-  await shell.run("flutter pub get");
+    Logger.newLine();
+    Logger.newLine();
+
+    Logger.info("Let's change all in lib !");
+    await changeAllFilesIn("lib", config);
+
+    Logger.info("Let's change all in tests !");
+    await changeAllFilesIn("test", config);
+
+    var shell = Shell();
+
+    await shell.run("flutter pub get");
+  } catch (error) {
+    if (error is MissingConfiguration) {
+      Logger.error(error.message);
+      return;
+    }
+  }
 }
 
 changeAllFilesIn(String directoryPath, Config config) async {
@@ -43,15 +62,14 @@ changeAllFilesIn(String directoryPath, Config config) async {
       if (fileSystemEntity is File) {
         await changeContentInFile(
           fileSystemEntity.path,
-          RegExp(config.oldIdentifier),
-          config.newIdentifier,
+          RegExp(config.oldApplicationId),
+          config.newApplicationId,
         );
       }
     });
   } else {
     Logger.error("Missing $directoryPath, it will be ignored");
   }
-
 }
 
 applyContentChanges(List<RequiredChange> requiredChanges) async {

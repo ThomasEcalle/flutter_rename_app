@@ -29,6 +29,12 @@ dev_dependencies:
   flutter_rename_app:
     path: ../
 
+flutter_rename_app:
+  application_name: Travel App
+  bundle_id: com.ios.travel
+  application_id: com.android.travel
+  dart_package_name: travel_app
+  android_package_name: com.android.travel
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
