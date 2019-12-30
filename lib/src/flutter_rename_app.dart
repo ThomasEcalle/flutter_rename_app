@@ -2,6 +2,7 @@ library flutter_rename_app;
 
 import 'dart:io';
 
+import 'package:flutter_rename_app/src/changes/files_to_modify_name.dart';
 import 'package:flutter_rename_app/src/utils/logger.dart';
 import 'package:process_run/shell_run.dart';
 
@@ -29,8 +30,11 @@ renameApp() async {
     Logger.info("Current app android package name = ${config.oldAndroidPackageName}");
     Logger.info("New app android package name: ${config.newAndroidPackageName}");
 
-    final List<RequiredChange> requiredChanges = getFilesToModifyContent(config);
-    _applyContentChanges(requiredChanges);
+    final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
+    _applyContentChanges(contentChanges);
+
+    final List<RequiredChange> nameChanges = getFilesToModifyName(config);
+    _applyNameChanges(nameChanges);
 
     Logger.newLine();
     Logger.newLine();
@@ -70,12 +74,31 @@ _changeAllImportsIn(String directoryPath, Config config) async {
   }
 }
 
+_applyNameChanges(List<RequiredChange> requiredChanges) async {
+  await Future.forEach(requiredChanges, (RequiredChange change) async {
+    for (final path in change.paths) {
+      await _changeFileName(path, change.regexp, change.replacement);
+    }
+  });
+}
+
 _applyContentChanges(List<RequiredChange> requiredChanges) async {
   await Future.forEach(requiredChanges, (RequiredChange change) async {
-    for (var path in change.paths) {
+    for (final path in change.paths) {
       await _changeContentInFile(path, change.regexp, change.replacement);
     }
   });
+}
+
+_changeFileName(String filePath, RegExp regexp, String replacement) async {
+  if (filePath.contains(regexp)) {
+    try {
+      final File file = File(filePath);
+      file.rename(filePath.replaceAll(regexp, replacement));
+    } on FileSystemException {
+      Logger.error("File $filePath does not exist on this project");
+    }
+  }
 }
 
 _changeContentInFile(String filePath, RegExp regexp, String replacement) async {

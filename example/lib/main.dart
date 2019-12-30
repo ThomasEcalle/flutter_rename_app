@@ -1,4 +1,4 @@
-import 'package:travel_app/screens/home.dart';
+import 'package:travel_app_package/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());

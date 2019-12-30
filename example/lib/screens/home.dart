@@ -1,4 +1,4 @@
-import 'package:travel_app/widgets/awesome_widget.dart';
+import 'package:travel_app_package/widgets/awesome_widget.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
