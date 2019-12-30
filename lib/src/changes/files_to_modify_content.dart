@@ -30,5 +30,15 @@ List<RequiredChange> getFilesToModifyContent(
       replacement: config.newAppName,
       paths: ["ios/Runner/Info.plist"],
     ),
+    RequiredChange(
+      regexp: RegExp(config.oldAndroidPackageName),
+      replacement: config.newAndroidPackageName,
+      paths: [
+        "android/src/main/kotlin/${config.oldAndroidPackageName.replaceAll('.', '/')}",
+        "android/src/debug",
+        "android/src/profile",
+      ],
+      isDirectory: true,
+    ),
   ];
 }

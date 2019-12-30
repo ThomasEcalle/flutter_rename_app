@@ -45,7 +45,9 @@ renameApp() async {
     Logger.info("Let's change all in tests !");
     await _changeAllImportsIn("test", config);
 
-    var shell = Shell();
+    await _changeAndroidPackageName(config);
+
+    final shell = Shell();
 
     await shell.run("flutter pub get");
   } catch (error) {
@@ -54,6 +56,39 @@ renameApp() async {
       return;
     }
   }
+}
+
+_changeAndroidPackageName(Config config) async {
+  Logger.newLine();
+  Logger.info("Changing android package name");
+  final String newPackageName = config.newAndroidPackageName;
+  final List<String> newPackageNameParts = newPackageName.split(".");
+
+  final Directory javaDirectory = Directory("android/app/src/main/java");
+  int index = 0;
+  javaDirectory.list(recursive: true).forEach((FileSystemEntity fileSystemEntity) {
+    if (index < newPackageNameParts.length - 1 &&
+        fileSystemEntity is Directory &&
+        fileSystemEntity.path.endsWith(newPackageNameParts[index])) {
+      fileSystemEntity.renameSync(newPackageNameParts[index]);
+      print("CHANGED dir name from ${fileSystemEntity.path} to ${newPackageNameParts[index]} ");
+      index++;
+    }
+  });
+
+  final Directory kotlinDirectory = Directory("android/app/src/main/kotlin");
+  index = 0;
+  kotlinDirectory.list(recursive: true).forEach((FileSystemEntity fileSystemEntity) {
+    if (index < newPackageNameParts.length - 1 &&
+        fileSystemEntity is Directory &&
+        fileSystemEntity.path.endsWith(newPackageNameParts[index])) {
+      fileSystemEntity.renameSync(newPackageNameParts[index]);
+      print("CHANGED dir name from ${fileSystemEntity.path} to ${newPackageNameParts[index]} ");
+      index++;
+    }
+  });
+
+  Logger.newLine();
 }
 
 _changeAllImportsIn(String directoryPath, Config config) async {
@@ -85,7 +120,14 @@ _applyNameChanges(List<RequiredChange> requiredChanges) async {
 _applyContentChanges(List<RequiredChange> requiredChanges) async {
   await Future.forEach(requiredChanges, (RequiredChange change) async {
     for (final path in change.paths) {
-      await _changeContentInFile(path, change.regexp, change.replacement);
+      if (change.isDirectory) {
+        final Directory directory = Directory(path);
+        Future.forEach(directory.listSync(recursive: true), (FileSystemEntity entity) async {
+          await _changeContentInFile(entity.path, change.regexp, change.replacement);
+        });
+      } else {
+        await _changeContentInFile(path, change.regexp, change.replacement);
+      }
     }
   });
 }
@@ -94,7 +136,7 @@ _changeFileName(String filePath, RegExp regexp, String replacement) async {
   if (filePath.contains(regexp)) {
     try {
       final File file = File(filePath);
-      file.rename(filePath.replaceAll(regexp, replacement));
+      file.renameSync(filePath.replaceAll(regexp, replacement));
     } on FileSystemException {
       Logger.error("File $filePath does not exist on this project");
     }
