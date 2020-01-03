@@ -32,7 +32,7 @@ List<RequiredChange> getFilesToModifyContent(
     ),
     RequiredChange(
       regexp: RegExp("${config.oldAppName}|Runner"),
-      replacement: config.newAppName,
+      replacement: config.newAppName.replaceAll(" ", ""),
       paths: ["ios/Podfile"],
     ),
     RequiredChange(
