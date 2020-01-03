@@ -11,6 +11,7 @@ import 'models/config.dart';
 import 'models/errors.dart';
 import 'models/required_change.dart';
 import 'utils/change_android_package_name.dart';
+import 'utils/change_ios_directories_names.dart';
 import 'utils/get_config.dart';
 
 renameApp() async {
@@ -46,6 +47,8 @@ renameApp() async {
 
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
     await _applyNameChanges(nameChanges);
+
+    await changeIosDirectoriesNames(config);
 
     final shell = Shell();
 
