@@ -54,7 +54,7 @@ renameApp() async {
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
     _applyNameChanges(nameChanges);
 
-    await changeIosDirectoriesNames(config);
+    changeIosDirectoriesNames(config);
 
     final shell = Shell();
 
