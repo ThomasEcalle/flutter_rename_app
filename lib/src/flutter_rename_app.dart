@@ -36,10 +36,10 @@ renameApp() async {
 
     if (config.oldDartPackageName != config.newDartPackageName) {
       Logger.info("Let's change all in lib !");
-      await _changeAllImportsIn("lib", config);
+      _changeAllImportsIn("lib", config);
 
       Logger.info("Let's change all in tests !");
-      await _changeAllImportsIn("test", config);
+      _changeAllImportsIn("test", config);
     }
 
     if (config.oldAndroidPackageName != config.newAndroidPackageName) {
@@ -49,10 +49,10 @@ renameApp() async {
     }
 
     final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
-    await _applyContentChanges(contentChanges);
+    _applyContentChanges(contentChanges);
 
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
-    await _applyNameChanges(nameChanges);
+    _applyNameChanges(nameChanges);
 
     await changeIosDirectoriesNames(config);
 
@@ -68,11 +68,11 @@ renameApp() async {
   }
 }
 
-_changeAllImportsIn(String directoryPath, Config config) async {
+_changeAllImportsIn(String directoryPath, Config config) {
   final Directory directory = Directory(directoryPath);
   if (directory.existsSync()) {
     final List<FileSystemEntity> files = directory.listSync(recursive: true);
-    return await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
+    files.forEach((FileSystemEntity fileSystemEntity) {
       if (fileSystemEntity is File) {
         _changeContentInFile(
           fileSystemEntity.path,
@@ -86,20 +86,20 @@ _changeAllImportsIn(String directoryPath, Config config) async {
   }
 }
 
-_applyNameChanges(List<RequiredChange> requiredChanges) async {
-  return await Future.forEach(requiredChanges, (RequiredChange change) async {
+_applyNameChanges(List<RequiredChange> requiredChanges) {
+  requiredChanges.forEach((RequiredChange change) {
     for (final path in change.paths) {
-      await _changeFileName(path, change.regexp, change.replacement);
+      _changeFileName(path, change.regexp, change.replacement);
     }
   });
 }
 
-_applyContentChanges(List<RequiredChange> requiredChanges) async {
-  return await Future.forEach(requiredChanges, (RequiredChange change) async {
+_applyContentChanges(List<RequiredChange> requiredChanges) {
+  requiredChanges.forEach((RequiredChange change) {
     for (final path in change.paths) {
       if (change.isDirectory) {
         final Directory directory = Directory(path);
-        Future.forEach(directory.listSync(recursive: true), (FileSystemEntity entity) async {
+        directory.listSync(recursive: true).forEach((FileSystemEntity entity) {
           _changeContentInFile(entity.path, change.regexp, change.replacement);
         });
       } else {
