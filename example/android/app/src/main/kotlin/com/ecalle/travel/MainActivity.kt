@@ -1,4 +1,4 @@
-package com.thomasecalle.example
+package com.ecalle.travel
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

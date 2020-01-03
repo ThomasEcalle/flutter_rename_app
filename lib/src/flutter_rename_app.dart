@@ -66,9 +66,9 @@ _changeAllImportsIn(String directoryPath, Config config) async {
   final Directory directory = Directory(directoryPath);
   if (directory.existsSync()) {
     final List<FileSystemEntity> files = directory.listSync(recursive: true);
-    await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
+    return await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
       if (fileSystemEntity is File) {
-        await _changeContentInFile(
+        _changeContentInFile(
           fileSystemEntity.path,
           RegExp(config.oldDartPackageName),
           config.newDartPackageName,
@@ -94,10 +94,10 @@ _applyContentChanges(List<RequiredChange> requiredChanges) async {
       if (change.isDirectory) {
         final Directory directory = Directory(path);
         Future.forEach(directory.listSync(recursive: true), (FileSystemEntity entity) async {
-          await _changeContentInFile(entity.path, change.regexp, change.replacement);
+          _changeContentInFile(entity.path, change.regexp, change.replacement);
         });
       } else {
-        await _changeContentInFile(path, change.regexp, change.replacement);
+        _changeContentInFile(path, change.regexp, change.replacement);
       }
     }
   });
