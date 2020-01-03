@@ -34,13 +34,19 @@ renameApp() async {
 
     Logger.newLine();
 
-    Logger.info("Let's change all in lib !");
-    await _changeAllImportsIn("lib", config);
+    if (config.oldDartPackageName != config.newDartPackageName) {
+      Logger.info("Let's change all in lib !");
+      await _changeAllImportsIn("lib", config);
 
-    Logger.info("Let's change all in tests !");
-    await _changeAllImportsIn("test", config);
+      Logger.info("Let's change all in tests !");
+      await _changeAllImportsIn("test", config);
+    }
 
-    await changeAndroidPackageName(config);
+    if (config.oldAndroidPackageName != config.newAndroidPackageName) {
+      Logger.newLine();
+      Logger.info("Changing android package name");
+      await changeAndroidPackageName(config);
+    }
 
     final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
     await _applyContentChanges(contentChanges);

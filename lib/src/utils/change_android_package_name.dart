@@ -4,8 +4,6 @@ import 'package:flutter_rename_app/src/models/config.dart';
 import 'package:flutter_rename_app/src/utils/logger.dart';
 
 changeAndroidPackageName(Config config) async {
-  Logger.newLine();
-  Logger.info("Changing android package name");
   final String newPackageName = config.newAndroidPackageName;
   final String oldPackageName = config.oldAndroidPackageName;
   final List<String> newPackageNameParts = newPackageName.split(".");
