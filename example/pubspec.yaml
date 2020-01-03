@@ -36,7 +36,7 @@ flutter_rename_app:
   dart_package_name: travel_app_package
   application_id: com.android.travel
   bundle_id: com.ios.travel
-  android_package_name: com.android.travel
+  android_package_name: com.ecalle.travel
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -10,6 +10,7 @@ import 'changes/files_to_modify_content.dart';
 import 'models/config.dart';
 import 'models/errors.dart';
 import 'models/required_change.dart';
+import 'utils/change_android_package_name.dart';
 import 'utils/get_config.dart';
 
 renameApp() async {
@@ -30,13 +31,6 @@ renameApp() async {
     Logger.info("Current app android package name = ${config.oldAndroidPackageName}");
     Logger.info("New app android package name: ${config.newAndroidPackageName}");
 
-    final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
-    _applyContentChanges(contentChanges);
-
-    final List<RequiredChange> nameChanges = getFilesToModifyName(config);
-    _applyNameChanges(nameChanges);
-
-    Logger.newLine();
     Logger.newLine();
 
     Logger.info("Let's change all in lib !");
@@ -45,7 +39,13 @@ renameApp() async {
     Logger.info("Let's change all in tests !");
     await _changeAllImportsIn("test", config);
 
-    ///await _changeAndroidPackageName(config);
+    await changeAndroidPackageName(config);
+
+    final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
+    _applyContentChanges(contentChanges);
+
+    final List<RequiredChange> nameChanges = getFilesToModifyName(config);
+    _applyNameChanges(nameChanges);
 
     final shell = Shell();
 
@@ -56,39 +56,6 @@ renameApp() async {
       return;
     }
   }
-}
-
-_changeAndroidPackageName(Config config) async {
-  Logger.newLine();
-  Logger.info("Changing android package name");
-  final String newPackageName = config.newAndroidPackageName;
-  final List<String> newPackageNameParts = newPackageName.split(".");
-
-  final Directory javaDirectory = Directory("android/app/src/main/java");
-  int index = 0;
-  javaDirectory.list(recursive: true).forEach((FileSystemEntity fileSystemEntity) {
-    if (index < newPackageNameParts.length - 1 &&
-        fileSystemEntity is Directory &&
-        fileSystemEntity.path.endsWith(newPackageNameParts[index])) {
-      fileSystemEntity.renameSync(newPackageNameParts[index]);
-      print("CHANGED dir name from ${fileSystemEntity.path} to ${newPackageNameParts[index]} ");
-      index++;
-    }
-  });
-
-  final Directory kotlinDirectory = Directory("android/app/src/main/kotlin");
-  index = 0;
-  kotlinDirectory.list(recursive: true).forEach((FileSystemEntity fileSystemEntity) {
-    if (index < newPackageNameParts.length - 1 &&
-        fileSystemEntity is Directory &&
-        fileSystemEntity.path.endsWith(newPackageNameParts[index])) {
-      fileSystemEntity.renameSync(newPackageNameParts[index]);
-      print("CHANGED dir name from ${fileSystemEntity.path} to ${newPackageNameParts[index]} ");
-      index++;
-    }
-  });
-
-  Logger.newLine();
 }
 
 _changeAllImportsIn(String directoryPath, Config config) async {
