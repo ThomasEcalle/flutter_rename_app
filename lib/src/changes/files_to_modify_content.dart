@@ -36,6 +36,14 @@ List<RequiredChange> getFilesToModifyContent(
       paths: ["ios/Podfile"],
     ),
     RequiredChange(
+      regexp: RegExp("${config.oldAppName}|Runner"),
+      replacement: config.newAppName.replaceAll(" ", ""),
+      paths: [
+        "ios/Flutter/Debug.xconfig",
+        "ios/Flutter/Release.xconfig",
+      ],
+    ),
+    RequiredChange(
       regexp: RegExp(config.oldAndroidPackageName),
       replacement: config.newAndroidPackageName,
       paths: [
