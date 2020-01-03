@@ -23,19 +23,27 @@ changeAndroidPackageName(Config config) async {
   final List<FileSystemEntity> files = oldAndroidDirectory.listSync(recursive: true);
 
   await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
-    print("looking on file ${fileSystemEntity.path}");
     if (fileSystemEntity is File) {
-      print("test");
       try {
         final String fileName = fileSystemEntity.path.split("/").last;
         final File file = await fileSystemEntity.copy("${newAndroidDirectory.path}/$fileName");
-        print("a ${newAndroidDirectory.path}");
         file.createSync(recursive: true);
       } catch (error) {
-        print("error : $error");
+        Logger.error(error);
       }
     }
   });
+
+  /// Deleting all inside old Android package
+  print("Working directory = ${workingDirectory.path}");
+
+  final Directory directoryToDelete = _getFirstDifferentDirectory(
+    workingDirectory.path,
+    oldPackageNameParts,
+    newPackageNameParts,
+  );
+
+  directoryToDelete.deleteSync(recursive: true);
 }
 
 /// Get the directory for the Android files
@@ -48,4 +56,23 @@ Future<Directory> _getDirectory(List<String> oldPackageNameParts) async {
   }
 
   return Directory("android/app/src/main/kotlin");
+}
+
+/// Get the first directory that is different
+/// between old and new android package name
+Directory _getFirstDifferentDirectory(
+  String workingDirectoryPath,
+  List<String> oldPackageParts,
+  List<String> newPackageParts,
+) {
+  String path = "";
+  for (int i = 0; i < oldPackageParts.length; i++) {
+    path += "${oldPackageParts[i]}/";
+    if (!newPackageParts.contains(oldPackageParts[i])) {
+      break;
+    }
+  }
+
+  print("PATH = $path");
+  return Directory("$workingDirectoryPath/$path");
 }

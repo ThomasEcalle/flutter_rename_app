@@ -42,10 +42,10 @@ renameApp() async {
     await changeAndroidPackageName(config);
 
     final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
-    _applyContentChanges(contentChanges);
+    await _applyContentChanges(contentChanges);
 
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
-    _applyNameChanges(nameChanges);
+    await _applyNameChanges(nameChanges);
 
     final shell = Shell();
 
@@ -55,6 +55,7 @@ renameApp() async {
       Logger.error(error.message);
       return;
     }
+    print("ERROR : $error");
   }
 }
 
@@ -77,7 +78,7 @@ _changeAllImportsIn(String directoryPath, Config config) async {
 }
 
 _applyNameChanges(List<RequiredChange> requiredChanges) async {
-  await Future.forEach(requiredChanges, (RequiredChange change) async {
+  return await Future.forEach(requiredChanges, (RequiredChange change) async {
     for (final path in change.paths) {
       await _changeFileName(path, change.regexp, change.replacement);
     }
@@ -85,7 +86,7 @@ _applyNameChanges(List<RequiredChange> requiredChanges) async {
 }
 
 _applyContentChanges(List<RequiredChange> requiredChanges) async {
-  await Future.forEach(requiredChanges, (RequiredChange change) async {
+  return await Future.forEach(requiredChanges, (RequiredChange change) async {
     for (final path in change.paths) {
       if (change.isDirectory) {
         final Directory directory = Directory(path);
@@ -99,27 +100,27 @@ _applyContentChanges(List<RequiredChange> requiredChanges) async {
   });
 }
 
-_changeFileName(String filePath, RegExp regexp, String replacement) async {
+_changeFileName(String filePath, RegExp regexp, String replacement) {
   if (filePath.contains(regexp)) {
     try {
       final File file = File(filePath);
       file.renameSync(filePath.replaceAll(regexp, replacement));
     } on FileSystemException {
-      Logger.error("File $filePath does not exist on this project");
+      ///Logger.error("File $filePath does not exist on this project");
     }
   }
 }
 
-_changeContentInFile(String filePath, RegExp regexp, String replacement) async {
+_changeContentInFile(String filePath, RegExp regexp, String replacement) {
   try {
     final File file = File(filePath);
-    final String content = await file.readAsString();
+    final String content = file.readAsStringSync();
     if (content.contains(regexp)) {
       final String newContent = content.replaceAll(regexp, replacement);
-      await file.writeAsString(newContent);
+      file.writeAsStringSync(newContent);
       Logger.info("Changed file $filePath");
     }
   } on FileSystemException {
-    Logger.error("File $filePath does not exist on this project");
+    ///Logger.error("File $filePath does not exist on this project");
   }
 }
