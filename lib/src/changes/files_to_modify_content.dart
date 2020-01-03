@@ -39,8 +39,8 @@ List<RequiredChange> getFilesToModifyContent(
       regexp: RegExp("${config.oldAppName}|Runner"),
       replacement: config.newAppName.replaceAll(" ", ""),
       paths: [
-        "ios/Flutter/Debug.xconfig",
-        "ios/Flutter/Release.xconfig",
+        "ios/Flutter/Debug.xcconfig",
+        "ios/Flutter/Release.xcconfig",
       ],
     ),
     RequiredChange(
