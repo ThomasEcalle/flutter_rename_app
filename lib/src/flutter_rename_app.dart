@@ -54,7 +54,7 @@ renameApp() async {
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
     _applyNameChanges(nameChanges);
 
-    changeIosDirectoriesNames(config);
+    ///changeIosDirectoriesNames(config);
 
     final shell = Shell();
 
@@ -89,7 +89,7 @@ _changeAllImportsIn(String directoryPath, Config config) {
 _applyNameChanges(List<RequiredChange> requiredChanges) {
   requiredChanges.forEach((RequiredChange change) {
     for (final path in change.paths) {
-      _changeFileName(path, change.regexp, change.replacement);
+      _changeFileOrDirectoryName(path, change.regexp, change.replacement);
     }
   });
 }
@@ -109,13 +109,17 @@ _applyContentChanges(List<RequiredChange> requiredChanges) {
   });
 }
 
-_changeFileName(String filePath, RegExp regexp, String replacement) {
+_changeFileOrDirectoryName(String filePath, RegExp regexp, String replacement) {
+  print("Trying to change $filePath name");
   if (filePath.contains(regexp)) {
+    print("Trying to change $filePath name");
     try {
       final File file = File(filePath);
       file.renameSync(filePath.replaceAll(regexp, replacement));
-    } on FileSystemException {
-      ///Logger.error("File $filePath does not exist on this project");
+    } catch (error) {
+      Logger.error("error $error");
+      final Directory directory = Directory(filePath);
+      directory.renameSync(filePath.replaceAll(regexp, replacement));
     }
   }
 }
