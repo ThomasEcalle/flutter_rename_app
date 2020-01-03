@@ -8,7 +8,7 @@ changeIosDirectoriesNames(Config config) {
   print("oldIOSDirectories = $oldIOSDirectoriesName");
 
   final Directory iosDirectory = Directory("ios");
-  iosDirectory.listSync(recursive: true).forEach((FileSystemEntity entity) {
+  iosDirectory.listSync().forEach((FileSystemEntity entity) {
     if (entity is Directory &&
         (entity.path.contains(oldIOSDirectoriesName) || entity.path.contains("Runner"))) {
       print("Need to change ${entity.path} name");
