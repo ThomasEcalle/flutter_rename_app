@@ -31,6 +31,11 @@ List<RequiredChange> getFilesToModifyContent(
       paths: ["ios/Runner/Info.plist"],
     ),
     RequiredChange(
+      regexp: RegExp("${config.oldAppName}|Runner"),
+      replacement: config.newAppName,
+      paths: ["ios/Podfile"],
+    ),
+    RequiredChange(
       regexp: RegExp(config.oldAndroidPackageName),
       replacement: config.newAndroidPackageName,
       paths: [
