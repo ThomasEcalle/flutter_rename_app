@@ -35,8 +35,6 @@ changeAndroidPackageName(Config config) async {
   });
 
   /// Deleting all inside old Android package
-  print("Working directory = ${workingDirectory.path}");
-
   final Directory directoryToDelete = _getFirstDifferentDirectory(
     workingDirectory.path,
     oldPackageNameParts,
@@ -66,13 +64,18 @@ Directory _getFirstDifferentDirectory(
   List<String> newPackageParts,
 ) {
   String path = "";
+  bool foundADifference = false;
   for (int i = 0; i < oldPackageParts.length; i++) {
     path += "${oldPackageParts[i]}/";
     if (!newPackageParts.contains(oldPackageParts[i])) {
+      foundADifference = true;
       break;
     }
   }
 
-  print("PATH = $path");
-  return Directory("$workingDirectoryPath/$path");
+  /// In case of the new package_name being longer than previous one like :
+  /// com.example.one becoming com.example.one.two
+  if (foundADifference) {
+    return Directory("$workingDirectoryPath/$path");
+  }
 }

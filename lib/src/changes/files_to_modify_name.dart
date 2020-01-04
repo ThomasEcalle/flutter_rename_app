@@ -9,6 +9,7 @@ List<RequiredChange> getFilesToModifyName(
       regexp: RegExp(config.oldDartPackageName),
       replacement: config.newDartPackageName,
       paths: ["android/${config.oldDartPackageName}_android.iml"],
+      needChanges: config.oldDartPackageName != config.newDartPackageName,
     ),
   ];
 }

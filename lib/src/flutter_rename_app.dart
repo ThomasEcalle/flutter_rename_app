@@ -16,6 +16,7 @@ import 'utils/get_config.dart';
 renameApp() async {
   try {
     final Config config = await getConfig();
+
     Logger.info("Current app name: ${config.oldAppName}");
     Logger.info("New name will be: ${config.newAppName}");
 
@@ -62,6 +63,8 @@ renameApp() async {
   }
 }
 
+/// Change all imports in given path (recursively)
+/// Needed in order to change dart package name in lib or test
 _changeAllImportsIn(String directoryPath, Config config) {
   final Directory directory = Directory(directoryPath);
   if (directory.existsSync()) {
@@ -80,29 +83,36 @@ _changeAllImportsIn(String directoryPath, Config config) {
   }
 }
 
+/// Apply the list of required files name changes
 _applyNameChanges(List<RequiredChange> requiredChanges) {
   requiredChanges.forEach((RequiredChange change) {
-    for (final path in change.paths) {
-      _changeFileName(path, change.regexp, change.replacement);
-    }
-  });
-}
-
-_applyContentChanges(List<RequiredChange> requiredChanges) {
-  requiredChanges.forEach((RequiredChange change) {
-    for (final path in change.paths) {
-      if (change.isDirectory) {
-        final Directory directory = Directory(path);
-        directory.listSync(recursive: true).forEach((FileSystemEntity entity) {
-          _changeContentInFile(entity.path, change.regexp, change.replacement);
-        });
-      } else {
-        _changeContentInFile(path, change.regexp, change.replacement);
+    if (change.needChanges) {
+      for (final path in change.paths) {
+        _changeFileName(path, change.regexp, change.replacement);
       }
     }
   });
 }
 
+/// Apply the list of required files content changes
+_applyContentChanges(List<RequiredChange> requiredChanges) {
+  requiredChanges.forEach((RequiredChange change) {
+    if (change.needChanges) {
+      for (final path in change.paths) {
+        if (change.isDirectory) {
+          final Directory directory = Directory(path);
+          directory.listSync(recursive: true).forEach((FileSystemEntity entity) {
+            _changeContentInFile(entity.path, change.regexp, change.replacement);
+          });
+        } else {
+          _changeContentInFile(path, change.regexp, change.replacement);
+        }
+      }
+    }
+  });
+}
+
+/// Change the name of the File at the given path by the given replacement name
 _changeFileName(String filePath, RegExp regexp, String replacement) {
   if (filePath.contains(regexp)) {
     try {
@@ -112,6 +122,7 @@ _changeFileName(String filePath, RegExp regexp, String replacement) {
   }
 }
 
+/// Change content of the given File by the given content
 _changeContentInFile(String filePath, RegExp regexp, String replacement) {
   try {
     final File file = File(filePath);
@@ -119,7 +130,7 @@ _changeContentInFile(String filePath, RegExp regexp, String replacement) {
     if (content.contains(regexp)) {
       final String newContent = content.replaceAll(regexp, replacement);
       file.writeAsStringSync(newContent);
-      Logger.info("Changed file $filePath");
+      Logger.info("$filePath has been modified");
     }
   } catch (error) {}
 }
