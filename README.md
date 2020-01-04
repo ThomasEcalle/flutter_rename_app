@@ -1,14 +1,47 @@
 # flutter_rename_app
 
-A new Flutter package.
+Rename Flutter applications in one command.
 
-## Getting Started
+> This package assumes that you created your flutter project using `flutter create` command line.
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+## Usage
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+### Add dependency
+
+```
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_rename_app:
+```
+
+### Define Settings
+
+```
+flutter_rename_app:
+  application_name: Bank App
+  dart_package_name: bank_app
+  application_id: com.android.bank
+  bundle_id: com.ios.bank
+  android_package_name: com.bank.app
+```
+
+| setting | description | required |
+| ---- | -- | -- |
+| application_name | Your application's name | yes |
+| dart_package_name | The dart package name (used in all imports in your `lib` or `test` directories) | no |
+| application_id | The android `application_id`, must be unique on the Play Store | no |
+| bundle_id | The iOS `bundle_id`, must be unique on the Apple Store | no |
+| android_package_name | The android `package_name`, used only for the architecture of your android files | no |
+
+## Run package
+
+Make sure that your current working directory is the project root.
+
+> Make sure to be able to get back to previous state in case something went wrong, by commiting your work before running the package for example.
+
+
+```
+flutter pub get
+flutter pub run flutter_rename_app
+```
