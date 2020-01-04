@@ -69,6 +69,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_rename_app:
+    dependency: "direct dev"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -81,6 +88,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
+  io:
+    dependency: transitive
+    description:
+      name: io
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.3"
   matcher:
     dependency: transitive
     description:
@@ -116,6 +130,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.0"
+  process_run:
+    dependency: transitive
+    description:
+      name: process_run
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.6"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.2"
   quiver:
     dependency: transitive
     description:
@@ -191,5 +219,12 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
 sdks:
-  dart: ">=2.4.0 <3.0.0"
+  dart: ">=2.5.0-dev <3.0.0"
