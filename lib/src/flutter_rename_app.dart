@@ -16,21 +16,42 @@ import 'utils/get_config.dart';
 renameApp() async {
   try {
     final Config config = await getConfig();
+    bool requireChanges = false;
 
-    Logger.info("Current app name: ${config.oldAppName}");
-    Logger.info("New name will be: ${config.newAppName}");
+    if (config.oldAppName != config.newAppName) {
+      Logger.info(
+          "Need to change the application name from : ${config.oldAppName} to ${config.newAppName}");
+      requireChanges = true;
+    }
 
-    Logger.info("Current app application id = ${config.oldApplicationId}");
-    Logger.info("New application id will be: ${config.newApplicationId}");
+    if (config.oldApplicationId != config.newApplicationId) {
+      Logger.info(
+          "Need to change the application id from : ${config.oldApplicationId} to ${config.newApplicationId}");
+      requireChanges = true;
+    }
 
-    Logger.info("Current app bundle id = ${config.oldBundleId}");
-    Logger.info("New application bundle id will be: ${config.newBundleId}");
+    if (config.oldBundleId != config.newBundleId) {
+      Logger.info(
+          "Need to change the bundle id from : ${config.oldBundleId} to ${config.newBundleId}");
+      requireChanges = true;
+    }
 
-    Logger.info("Current app dart package = ${config.oldDartPackageName}");
-    Logger.info("New app dart package: ${config.newDartPackageName}");
+    if (config.oldDartPackageName != config.newDartPackageName) {
+      Logger.info(
+          "Need to change the dart package from : ${config.oldDartPackageName} to ${config.newDartPackageName}");
+      requireChanges = true;
+    }
 
-    Logger.info("Current app android package name = ${config.oldAndroidPackageName}");
-    Logger.info("New app android package name: ${config.newAndroidPackageName}");
+    if (config.oldAndroidPackageName != config.newAndroidPackageName) {
+      Logger.info(
+          "Need to change the android package name from : ${config.oldAndroidPackageName} to ${config.newAndroidPackageName}");
+      requireChanges = true;
+    }
+
+    if (!requireChanges) {
+      Logger.info("It seems that no changes are required since last time !");
+      return;
+    }
 
     Logger.newLine();
 
