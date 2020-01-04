@@ -141,7 +141,7 @@ _changeFileName(String filePath, RegExp regexp, String replacement) async {
     try {
       final File file = File(filePath);
       file.renameSync(filePath.replaceAll(regexp, replacement));
-      Logger.info("$filePath has been modified");
+      Logger.info("$filePath", greenPart: "MODIFIED");
       await Future.delayed(fakeDelay);
     } catch (error) {}
   }
@@ -155,7 +155,7 @@ _changeContentInFile(String filePath, RegExp regexp, String replacement) async {
     if (content.contains(regexp)) {
       final String newContent = content.replaceAll(regexp, replacement);
       file.writeAsStringSync(newContent);
-      Logger.info("$filePath has been modified");
+      Logger.info("$filePath", greenPart: "MODIFIED");
       await Future.delayed(fakeDelay);
     }
   } catch (error) {}
