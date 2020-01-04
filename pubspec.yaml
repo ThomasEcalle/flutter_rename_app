@@ -1,8 +1,8 @@
 name: flutter_rename_app
-description: A new Flutter package.
+description: A package that enable to rename an entire app and ids in one command.
 version: 0.0.1
-author:
-homepage:
+author: ThomasEcalle<thomasecalle@gmail.com>
+homepage: https://github.com/ThomasEcalle/flutter_rename_app
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
