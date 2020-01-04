@@ -1,6 +1,7 @@
 import 'package:flutter_rename_app/src/models/config.dart';
 import 'package:flutter_rename_app/src/models/required_change.dart';
 
+/// List of the required changes of files names
 List<RequiredChange> getFilesToModifyName(
   Config config,
 ) {

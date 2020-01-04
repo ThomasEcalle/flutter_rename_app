@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter_rename_app/src/models/config.dart';
 import 'package:flutter_rename_app/src/utils/logger.dart';
 
+/// Change the Android package name
+/// The idea is to crate the new package's directories
+/// and to remove previous one
 changeAndroidPackageName(Config config) async {
   final String newPackageName = config.newAndroidPackageName;
   final String oldPackageName = config.oldAndroidPackageName;

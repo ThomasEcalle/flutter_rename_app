@@ -3,10 +3,7 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 
 class Utils {
-  static String fromNameToIdentifier(String newName) {
-    return newName.toLowerCase().replaceAll(" ", "_");
-  }
-
+  /// Read pubspec.yaml in order to retrieve the current dart package name
   static Future<String> getCurrentDartPackageName() async {
     final File file = File("pubspec.yaml");
     final String yamlString = file.readAsStringSync();
@@ -15,6 +12,7 @@ class Utils {
     return yamlMap["name"];
   }
 
+  /// Return a String replacing _ by spaces and adding uppercase to first works
   static String fromIdentifierToName(String identifier) {
     return identifier
         .split("_")

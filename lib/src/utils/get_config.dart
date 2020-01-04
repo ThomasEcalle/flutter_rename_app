@@ -18,6 +18,7 @@ class YamlArguments {
   static const String bundleId = 'bundle_id';
 }
 
+/// Parse the YAML configuration and the Android and iOS files to get the Config
 Future<Config> getConfig() async {
   final String currentDartPackageName = await Utils.getCurrentDartPackageName();
 
