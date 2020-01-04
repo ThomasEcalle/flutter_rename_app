@@ -33,19 +33,23 @@ renameApp() async {
 
     Logger.newLine();
 
-    Logger.info("Let's change all in lib !");
-    await _changeAllImportsIn("lib", config);
+    if (config.oldDartPackageName != config.newDartPackageName) {
+      Logger.info("Let's change all in lib !");
+      _changeAllImportsIn("lib", config);
 
-    Logger.info("Let's change all in tests !");
-    await _changeAllImportsIn("test", config);
+      Logger.info("Let's change all in tests !");
+      _changeAllImportsIn("test", config);
+    }
 
-    await changeAndroidPackageName(config);
+    if (config.oldAndroidPackageName != config.newAndroidPackageName) {
+      await changeAndroidPackageName(config);
+    }
 
     final List<RequiredChange> contentChanges = getFilesToModifyContent(config);
-    await _applyContentChanges(contentChanges);
+    _applyContentChanges(contentChanges);
 
     final List<RequiredChange> nameChanges = getFilesToModifyName(config);
-    await _applyNameChanges(nameChanges);
+    _applyNameChanges(nameChanges);
 
     final shell = Shell();
 
@@ -55,17 +59,16 @@ renameApp() async {
       Logger.error(error.message);
       return;
     }
-    print("ERROR : $error");
   }
 }
 
-_changeAllImportsIn(String directoryPath, Config config) async {
+_changeAllImportsIn(String directoryPath, Config config) {
   final Directory directory = Directory(directoryPath);
   if (directory.existsSync()) {
     final List<FileSystemEntity> files = directory.listSync(recursive: true);
-    await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
+    files.forEach((FileSystemEntity fileSystemEntity) {
       if (fileSystemEntity is File) {
-        await _changeContentInFile(
+        _changeContentInFile(
           fileSystemEntity.path,
           RegExp(config.oldDartPackageName),
           config.newDartPackageName,
@@ -77,24 +80,24 @@ _changeAllImportsIn(String directoryPath, Config config) async {
   }
 }
 
-_applyNameChanges(List<RequiredChange> requiredChanges) async {
-  return await Future.forEach(requiredChanges, (RequiredChange change) async {
+_applyNameChanges(List<RequiredChange> requiredChanges) {
+  requiredChanges.forEach((RequiredChange change) {
     for (final path in change.paths) {
-      await _changeFileName(path, change.regexp, change.replacement);
+      _changeFileName(path, change.regexp, change.replacement);
     }
   });
 }
 
-_applyContentChanges(List<RequiredChange> requiredChanges) async {
-  return await Future.forEach(requiredChanges, (RequiredChange change) async {
+_applyContentChanges(List<RequiredChange> requiredChanges) {
+  requiredChanges.forEach((RequiredChange change) {
     for (final path in change.paths) {
       if (change.isDirectory) {
         final Directory directory = Directory(path);
-        Future.forEach(directory.listSync(recursive: true), (FileSystemEntity entity) async {
-          await _changeContentInFile(entity.path, change.regexp, change.replacement);
+        directory.listSync(recursive: true).forEach((FileSystemEntity entity) {
+          _changeContentInFile(entity.path, change.regexp, change.replacement);
         });
       } else {
-        await _changeContentInFile(path, change.regexp, change.replacement);
+        _changeContentInFile(path, change.regexp, change.replacement);
       }
     }
   });
@@ -105,9 +108,7 @@ _changeFileName(String filePath, RegExp regexp, String replacement) {
     try {
       final File file = File(filePath);
       file.renameSync(filePath.replaceAll(regexp, replacement));
-    } on FileSystemException {
-      ///Logger.error("File $filePath does not exist on this project");
-    }
+    } catch (error) {}
   }
 }
 
@@ -120,7 +121,5 @@ _changeContentInFile(String filePath, RegExp regexp, String replacement) {
       file.writeAsStringSync(newContent);
       Logger.info("Changed file $filePath");
     }
-  } on FileSystemException {
-    ///Logger.error("File $filePath does not exist on this project");
-  }
+  } catch (error) {}
 }
