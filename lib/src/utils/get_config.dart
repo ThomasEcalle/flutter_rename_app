@@ -95,7 +95,7 @@ Future<String> _loadAndroidPackageName() async {
   try {
     return searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: 'package="([a-z.]*)"',
+      pattern: 'package="([a-z_.]*)"',
     );
   } catch (error) {
     print("Error reading Manifest : $error");
@@ -119,7 +119,7 @@ Future<String> _loadAndroidApplicationId() async {
   try {
     return searchInFile(
       filePath: "android/app/build.gradle",
-      pattern: 'applicationId "([a-z.]*)"',
+      pattern: 'applicationId "([a-z_.]*)"',
     );
   } catch (error) {
     print("Error reading build.gradle : $error");
@@ -131,7 +131,7 @@ Future<String> _loadBundleId() async {
   try {
     return searchInFile(
       filePath: "ios/Runner.xcodeproj/project.pbxproj",
-      pattern: 'PRODUCT_BUNDLE_IDENTIFIER = ([a-z.]*)',
+      pattern: 'PRODUCT_BUNDLE_IDENTIFIER = ([a-z_.]*)',
     );
   } catch (error) {
     print("Error reading Plist : $error");

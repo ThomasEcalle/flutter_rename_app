@@ -9,3 +9,7 @@
 ## [0.0.3] - 05/01/2020
 
 * Fix issue on app names with specific characters
+
+## [0.0.4] - 05/01/2020
+
+* Fix characters issues
