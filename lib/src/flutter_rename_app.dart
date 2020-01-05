@@ -82,6 +82,8 @@ renameApp() async {
       Logger.error(error.message);
       return;
     }
+
+    Logger.error("Getting error : $error");
   }
 }
 
@@ -125,7 +127,8 @@ _applyContentChanges(List<RequiredChange> requiredChanges) async {
           final Directory directory = Directory(path);
           await Future.forEach(directory.listSync(recursive: true),
               (FileSystemEntity entity) async {
-            await _changeContentInFile(entity.path, change.regexp, change.replacement);
+            await _changeContentInFile(
+                entity.path, change.regexp, change.replacement);
           });
         } else {
           await _changeContentInFile(path, change.regexp, change.replacement);

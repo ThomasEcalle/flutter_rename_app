@@ -17,17 +17,21 @@ changeAndroidPackageName(Config config) async {
   final String oldPackagePath = oldPackageNameParts.join("/");
   final String newPackagePath = newPackageNameParts.join("/");
 
-  final Directory oldAndroidDirectory = Directory("${workingDirectory.path}/$oldPackagePath");
-  final Directory newAndroidDirectory = Directory("${workingDirectory.path}/$newPackagePath");
+  final Directory oldAndroidDirectory =
+      Directory("${workingDirectory.path}/$oldPackagePath");
+  final Directory newAndroidDirectory =
+      Directory("${workingDirectory.path}/$newPackagePath");
 
   newAndroidDirectory.createSync(recursive: true);
-  final List<FileSystemEntity> files = oldAndroidDirectory.listSync(recursive: true);
+  final List<FileSystemEntity> files =
+      oldAndroidDirectory.listSync(recursive: true);
 
   await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
     if (fileSystemEntity is File) {
       try {
         final String fileName = fileSystemEntity.path.split("/").last;
-        final File file = await fileSystemEntity.copy("${newAndroidDirectory.path}/$fileName");
+        final File file = await fileSystemEntity
+            .copy("${newAndroidDirectory.path}/$fileName");
         file.createSync(recursive: true);
       } catch (error) {
         Logger.error(error);
@@ -42,14 +46,15 @@ changeAndroidPackageName(Config config) async {
     newPackageNameParts,
   );
 
-  directoryToDelete.deleteSync(recursive: true);
+  directoryToDelete?.deleteSync(recursive: true);
 }
 
 /// Get the directory for the Android files
 /// Either it is a Kotlin or Java project
 Future<Directory> _getDirectory(List<String> oldPackageNameParts) async {
   final String packagePath = oldPackageNameParts.join("/");
-  final Directory javaDirectory = Directory("android/app/src/main/java/$packagePath");
+  final Directory javaDirectory =
+      Directory("android/app/src/main/java/$packagePath");
   if (javaDirectory.existsSync()) {
     return Directory("android/app/src/main/java");
   }
@@ -79,4 +84,6 @@ Directory _getFirstDifferentDirectory(
   if (foundADifference) {
     return Directory("$workingDirectoryPath/$path");
   }
+
+  return null;
 }

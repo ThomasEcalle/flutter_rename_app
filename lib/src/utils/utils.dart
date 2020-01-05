@@ -16,7 +16,8 @@ class Utils {
   static String fromIdentifierToName(String identifier) {
     return identifier
         .split("_")
-        .map((word) => "${word[0].toUpperCase()}${word.substring(1, word.length)}")
+        .map((word) =>
+            "${word[0].toUpperCase()}${word.substring(1, word.length)}")
         .toList()
         .join(" ");
   }
