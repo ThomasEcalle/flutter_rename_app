@@ -10,7 +10,7 @@ class Logger {
   }
 
   /// Print the [message] in red
-  static error(String message) {
+  static void error(Object message) {
     final AnsiPen redPen = new AnsiPen()..red(bold: true);
     print(redPen(message));
   }
