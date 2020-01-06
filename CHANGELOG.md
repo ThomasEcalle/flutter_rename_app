@@ -13,3 +13,7 @@
 ## [0.0.4] - 05/01/2020
 
 * Fix characters issues
+
+## [1.0.0] - 06/01/2020
+
+* First Release version
