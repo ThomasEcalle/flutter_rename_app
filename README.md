@@ -6,6 +6,10 @@ Rename Flutter applications in one command.
 
 ## Usage
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/ThomasEcalle/flutter_rename_app/master/documentation/readme_gif.gif" width="360" height="320"/>
+</p>
+
 ### Add dependency
 
 ```
