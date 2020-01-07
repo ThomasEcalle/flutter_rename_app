@@ -168,7 +168,7 @@ Future<String> _loadAndroidAppName() async {
   try {
     return searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: 'android:label="($appNameRegexpPattern)',
+      pattern: 'android:label="($appNameRegexpPattern)"',
     );
   } catch (error) {
     print("Error reading Manifest : $error");

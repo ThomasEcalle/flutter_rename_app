@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_rename_app/src/changes/files_to_modify_name.dart';
 import 'package:flutter_rename_app/src/utils/logger.dart';
+import 'package:flutter_rename_app/src/utils/utils.dart';
 import 'package:process_run/shell_run.dart';
 
 import 'changes/files_to_modify_content.dart';
@@ -12,8 +13,7 @@ import 'models/errors.dart';
 import 'models/required_change.dart';
 import 'utils/change_android_package_name.dart';
 import 'utils/get_config.dart';
-
-const Duration fakeDelay = Duration(milliseconds: 500);
+import 'utils/change_app_names.dart';
 
 renameApp() async {
   try {
@@ -55,9 +55,11 @@ renameApp() async {
       return;
     }
 
-    await Future.delayed(fakeDelay);
+    await Future.delayed(Utils.fakeDelay);
 
     Logger.newLine();
+
+    await changeAppNames(config);
 
     if (config.oldDartPackageName != config.newDartPackageName) {
       await _changeAllImportsIn("lib", config);
@@ -95,7 +97,7 @@ _changeAllImportsIn(String directoryPath, Config config) async {
     final List<FileSystemEntity> files = directory.listSync(recursive: true);
     await Future.forEach(files, (FileSystemEntity fileSystemEntity) async {
       if (fileSystemEntity is File) {
-        await _changeContentInFile(
+        await Utils.changeContentInFile(
           fileSystemEntity.path,
           RegExp(config.oldDartPackageName),
           config.newDartPackageName,
@@ -127,11 +129,10 @@ _applyContentChanges(List<RequiredChange> requiredChanges) async {
           final Directory directory = Directory(path);
           await Future.forEach(directory.listSync(recursive: true),
               (FileSystemEntity entity) async {
-            await _changeContentInFile(
-                entity.path, change.regexp, change.replacement);
+            await Utils.changeContentInFile(entity.path, change.regexp, change.replacement);
           });
         } else {
-          await _changeContentInFile(path, change.regexp, change.replacement);
+          await Utils.changeContentInFile(path, change.regexp, change.replacement);
         }
       }
     }
@@ -145,21 +146,7 @@ _changeFileName(String filePath, RegExp regexp, String replacement) async {
       final File file = File(filePath);
       file.renameSync(filePath.replaceAll(regexp, replacement));
       Logger.info("$filePath", greenPart: "MODIFIED");
-      await Future.delayed(fakeDelay);
+      await Future.delayed(Utils.fakeDelay);
     } catch (error) {}
   }
-}
-
-/// Change content of the given File by the given content
-_changeContentInFile(String filePath, RegExp regexp, String replacement) async {
-  try {
-    final File file = File(filePath);
-    final String content = file.readAsStringSync();
-    if (content.contains(regexp)) {
-      final String newContent = content.replaceAll(regexp, replacement);
-      file.writeAsStringSync(newContent);
-      Logger.info("$filePath", greenPart: "MODIFIED");
-      await Future.delayed(fakeDelay);
-    }
-  } catch (error) {}
 }
