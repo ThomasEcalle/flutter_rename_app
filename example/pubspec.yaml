@@ -31,11 +31,14 @@ dev_dependencies:
     path: ../
 
 flutter_rename_app:
-  application_name: Bank App
-  dart_package_name: bank_app
-  application_id: com.android.bank
-  bundle_id: com.ios.bank
-  android_package_name: com.bank.app
+  application_name: example
+  i18n_application_names:
+    fr_FR: Mon appli
+    en_US: My Appli
+  dart_package_name: example
+  application_id: com.thomasecalle.example
+  bundle_id: com.thomasecalle.example
+  android_package_name: com.thomasecalle.example
 
 
 # For information on the generic Dart part of this file, see the

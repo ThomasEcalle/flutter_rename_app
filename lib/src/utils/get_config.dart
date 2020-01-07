@@ -9,6 +9,9 @@ import 'utils.dart';
 /// The section id for flutter_rename_app in the yaml file
 const String yamlSectionId = 'flutter_rename_app';
 
+/// App Name can be any characters
+const String appNameRegexpPattern = ".*";
+
 /// A class of arguments which the user can specify in pubspec.yaml
 class YamlArguments {
   static const String applicationName = 'application_name';
@@ -16,6 +19,7 @@ class YamlArguments {
   static const String applicationId = 'application_id';
   static const String androidPackageName = 'android_package_name';
   static const String bundleId = 'bundle_id';
+  static const String i18nAppNames = 'i18n_application_names';
 }
 
 /// Parse the YAML configuration and the Android and iOS files to get the Config
@@ -26,6 +30,7 @@ Future<Config> getConfig() async {
   String newAppName = Utils.fromIdentifierToName(currentDartPackageName);
 
   final Map<String, dynamic> settings = _loadSettings();
+
   if (settings.length < 0) {
     throw MissingConfiguration("Missing, at least, the application's name");
   }
@@ -60,9 +65,24 @@ Future<Config> getConfig() async {
     newAndroidPackageName = settings[YamlArguments.androidPackageName];
   }
 
+  Map<String, String> previousI18nNames = Map();
+  Map<String, String> newI18nNames = Map();
+
+  if (settings.containsKey(YamlArguments.i18nAppNames)) {
+    previousI18nNames = await _loadPreviousI18nAppNames();
+    for (final kvp in settings[YamlArguments.i18nAppNames].entries) {
+      if (kvp.value is String) {
+        newI18nNames[kvp.key] = kvp.value;
+      } else {
+        throw MissingConfiguration("${kvp.key}'s value must be a String");
+      }
+    }
+  }
   return Config(
     newAppName: newAppName,
     oldAppName: oldAppName,
+    oldI18nAppNames: previousI18nNames,
+    newI18nAppNames: newI18nNames,
     oldApplicationId: oldApplicationId,
     newApplicationId: newApplicationId,
     oldBundleId: oldBundleId,
@@ -72,6 +92,47 @@ Future<Config> getConfig() async {
     oldAndroidPackageName: oldAndroidPackageName,
     newAndroidPackageName: newAndroidPackageName,
   );
+}
+
+/// Returns a Map<String, String> of previous internationalized names in Android
+Future<Map<String, String>> _loadPreviousI18nAppNames() async {
+  final Directory androidResources = Directory("android/app/src/main/res");
+  final List<FileSystemEntity> resourcesEntities = androidResources.listSync();
+  final Map<String, String> result = Map();
+
+  for (final FileSystemEntity resourceEntity in resourcesEntities) {
+    final String resourceName = Utils.getFileName(resourceEntity.path);
+
+    if (resourceName.contains("values") && resourceEntity is Directory) {
+      final List<FileSystemEntity> valuesEntities = resourceEntity.listSync();
+
+      for (final FileSystemEntity valuesEntity in valuesEntities) {
+        final String valuesEntityName = Utils.getFileName(valuesEntity.path);
+        if (valuesEntityName == "strings.xml" && valuesEntity is File) {
+          final String appName = await searchInFile(
+            filePath: valuesEntity.path,
+            pattern: '<string name="app_name">($appNameRegexpPattern)</string>',
+          );
+
+          if (appName != null) {
+            final String lang = _getLangFromAndroidValuesDir(resourceName);
+            if (lang != null) {
+              result[lang] = appName;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+/// Returns locale (en, fr, etc.)
+/// from android values directory name
+String _getLangFromAndroidValuesDir(String valuesDirName) {
+  final RegExpMatch match = RegExp("values-([a-zA-Z-]+)").firstMatch(valuesDirName);
+  return match?.group(1);
 }
 
 /// Returns configuration settings for flutter_rename_app from pubspec.yaml
@@ -107,7 +168,7 @@ Future<String> _loadAndroidAppName() async {
   try {
     return searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: 'android:label="([A-Za-z0-9 _\'.]*)',
+      pattern: 'android:label="($appNameRegexpPattern)',
     );
   } catch (error) {
     print("Error reading Manifest : $error");
@@ -145,5 +206,5 @@ Future<String> searchInFile({String filePath, String pattern}) async {
   final RegExp regExp = RegExp(pattern);
 
   final RegExpMatch match = regExp.firstMatch(fileContent);
-  return match.group(1);
+  return match?.group(1);
 }
