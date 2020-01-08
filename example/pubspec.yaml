@@ -34,7 +34,7 @@ flutter_rename_app:
   application_name: totoro
   i18n_application_names:
     fr_FR: Mon appli
-    en_US: My Appli
+    en_US: My Applii
   dart_package_name: example
   application_id: com.thomasecalle.example
   bundle_id: com.thomasecalle.example

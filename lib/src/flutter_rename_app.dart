@@ -12,8 +12,8 @@ import 'models/config.dart';
 import 'models/errors.dart';
 import 'models/required_change.dart';
 import 'utils/change_android_package_name.dart';
-import 'utils/get_config.dart';
 import 'utils/change_app_names.dart';
+import 'utils/get_config.dart';
 
 renameApp() async {
   try {
@@ -47,6 +47,11 @@ renameApp() async {
     if (config.oldAndroidPackageName != config.newAndroidPackageName) {
       Logger.info(
           "Need to change the android package name from : ${config.oldAndroidPackageName} to ${config.newAndroidPackageName}");
+      requireChanges = true;
+    }
+
+    if (_i18nAreDifferents(config.oldI18nAppNames, config.newI18nAppNames)) {
+      Logger.info("Need to change the internationalized app names");
       requireChanges = true;
     }
 
@@ -149,4 +154,18 @@ _changeFileName(String filePath, RegExp regexp, String replacement) async {
       await Future.delayed(Utils.fakeDelay);
     } catch (error) {}
   }
+}
+
+/// Return true if new internationalized app names are differents
+/// from previous ones
+bool _i18nAreDifferents(Map<String, String> first, Map<String, String> second) {
+  if (first.entries.length != second.entries.length) return true;
+  bool mapsAreDifferents = false;
+  first.forEach((String key, String value) {
+    if (second[key] != value) {
+      mapsAreDifferents = true;
+    }
+  });
+
+  return mapsAreDifferents;
 }

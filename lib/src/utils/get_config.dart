@@ -78,6 +78,7 @@ Future<Config> getConfig() async {
       }
     }
   }
+
   return Config(
     newAppName: newAppName,
     oldAppName: oldAppName,
@@ -109,9 +110,9 @@ Future<Map<String, String>> _loadPreviousI18nAppNames() async {
       for (final FileSystemEntity valuesEntity in valuesEntities) {
         final String valuesEntityName = Utils.getFileName(valuesEntity.path);
         if (valuesEntityName == "strings.xml" && valuesEntity is File) {
-          final String appName = await searchInFile(
+          final String appName = await Utils.searchInFile(
             filePath: valuesEntity.path,
-            pattern: '<string name="app_name">($appNameRegexpPattern)</string>',
+            pattern: RegExp('<string name="app_name">($appNameRegexpPattern)</string>'),
           );
 
           if (appName != null) {
@@ -154,9 +155,9 @@ Map<String, dynamic> _loadSettings() {
 
 Future<String> _loadAndroidPackageName() async {
   try {
-    return searchInFile(
+    return Utils.searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: 'package="([a-z_.]*)"',
+      pattern: RegExp('package="([a-z_.]*)"'),
     );
   } catch (error) {
     print("Error reading Manifest : $error");
@@ -166,9 +167,9 @@ Future<String> _loadAndroidPackageName() async {
 
 Future<String> _loadAndroidAppName() async {
   try {
-    return searchInFile(
+    return Utils.searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: 'android:label="($appNameRegexpPattern)"',
+      pattern: RegExp('android:label="($appNameRegexpPattern)"'),
     );
   } catch (error) {
     print("Error reading Manifest : $error");
@@ -178,9 +179,9 @@ Future<String> _loadAndroidAppName() async {
 
 Future<String> _loadAndroidApplicationId() async {
   try {
-    return searchInFile(
+    return Utils.searchInFile(
       filePath: "android/app/build.gradle",
-      pattern: 'applicationId "([a-z_.]*)"',
+      pattern: RegExp('applicationId "([a-z_.]*)"'),
     );
   } catch (error) {
     print("Error reading build.gradle : $error");
@@ -190,21 +191,12 @@ Future<String> _loadAndroidApplicationId() async {
 
 Future<String> _loadBundleId() async {
   try {
-    return searchInFile(
+    return Utils.searchInFile(
       filePath: "ios/Runner.xcodeproj/project.pbxproj",
-      pattern: 'PRODUCT_BUNDLE_IDENTIFIER = ([a-z_.]*)',
+      pattern: RegExp('PRODUCT_BUNDLE_IDENTIFIER = ([a-z_.]*)'),
     );
   } catch (error) {
     print("Error reading Plist : $error");
     return "";
   }
-}
-
-Future<String> searchInFile({String filePath, String pattern}) async {
-  final File file = File(filePath);
-  final String fileContent = file.readAsStringSync();
-  final RegExp regExp = RegExp(pattern);
-
-  final RegExpMatch match = regExp.firstMatch(fileContent);
-  return match?.group(1);
 }

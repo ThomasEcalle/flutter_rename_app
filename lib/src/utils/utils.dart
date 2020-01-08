@@ -42,4 +42,14 @@ class Utils {
       }
     } catch (error) {}
   }
+
+  /// Returns a String corresponding to [pattern] searched in a File
+  static Future<String> searchInFile({String filePath, RegExp pattern}) async {
+    final File file = File(filePath);
+    final String fileContent = file.readAsStringSync();
+    final RegExp regExp = pattern;
+
+    final RegExpMatch match = regExp.firstMatch(fileContent);
+    return match?.group(1);
+  }
 }

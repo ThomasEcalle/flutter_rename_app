@@ -7,13 +7,23 @@ changeAppNames(Config config) async {
 }
 
 _changeAndroidAppNames(Config config) async {
-  if (config.oldAppName != config.newAppName) {
-    Utils.changeContentInFile(
-      "android/app/src/main/AndroidManifest.xml",
-      RegExp('android:label="${config.oldAppName}"'),
-      'android:label="${config.newAppName}"',
-    );
-  }
+  await _changeAndroidManifest();
+}
+
+_changeAndroidManifest() async {
+  final String androidManifestPath = "android/app/src/main/AndroidManifest.xml";
+  final String result = await Utils.searchInFile(
+    filePath: androidManifestPath,
+    pattern: RegExp('android:label="@string/app_name"'),
+  );
+
+  if (result != null) return;
+
+  await Utils.changeContentInFile(
+    androidManifestPath,
+    RegExp('android:label="(.*)"'),
+    'android:label="@string/app_name"',
+  );
 }
 
 _changeIosAppNames(Config config) async {
