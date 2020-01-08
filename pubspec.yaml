@@ -12,6 +12,7 @@ dependencies:
   yaml: ^2.2.0
   process_run: ^0.10.6
   ansicolor: ^1.0.2
+  xml: ^3.5.0
 
 dev_dependencies:
   flutter_test:

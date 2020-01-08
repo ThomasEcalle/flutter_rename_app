@@ -116,7 +116,7 @@ Future<Map<String, String>> _loadPreviousI18nAppNames() async {
           );
 
           if (appName != null) {
-            final String lang = _getLangFromAndroidValuesDir(resourceName);
+            final String lang = Utils.getLangFromAndroidValuesDir(resourceName);
             if (lang != null) {
               result[lang] = appName;
             }
@@ -127,13 +127,6 @@ Future<Map<String, String>> _loadPreviousI18nAppNames() async {
   }
 
   return result;
-}
-
-/// Returns locale (en, fr, etc.)
-/// from android values directory name
-String _getLangFromAndroidValuesDir(String valuesDirName) {
-  final RegExpMatch match = RegExp("values-([a-zA-Z-]+)").firstMatch(valuesDirName);
-  return match?.group(1);
 }
 
 /// Returns configuration settings for flutter_rename_app from pubspec.yaml
@@ -168,8 +161,8 @@ Future<String> _loadAndroidPackageName() async {
 Future<String> _loadAndroidAppName() async {
   try {
     return Utils.searchInFile(
-      filePath: "android/app/src/main/AndroidManifest.xml",
-      pattern: RegExp('android:label="($appNameRegexpPattern)"'),
+      filePath: "android/app/src/main/res/values/strings.xml",
+      pattern: RegExp('<string name="app_name">(.*)</string>'),
     );
   } catch (error) {
     print("Error reading Manifest : $error");

@@ -47,9 +47,15 @@ class Utils {
   static Future<String> searchInFile({String filePath, RegExp pattern}) async {
     final File file = File(filePath);
     final String fileContent = file.readAsStringSync();
-    final RegExp regExp = pattern;
 
-    final RegExpMatch match = regExp.firstMatch(fileContent);
+    final RegExpMatch match = pattern.firstMatch(fileContent);
+    return match?.group(1);
+  }
+
+  /// Returns locale (en, fr, etc.)
+  /// from android values directory name
+  static String getLangFromAndroidValuesDir(String valuesDirName) {
+    final RegExpMatch match = RegExp("values-([a-zA-Z-]+)").firstMatch(valuesDirName);
     return match?.group(1);
   }
 }
