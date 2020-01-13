@@ -20,9 +20,9 @@ renameApp() async {
     final Config config = await getConfig();
     bool requireChanges = false;
 
-    if (config.oldAppName != config.newAppName) {
+    if (config.oldAndroidAppName != config.newAppName) {
       Logger.info(
-          "Need to change the application name from : ${config.oldAppName} to ${config.newAppName}");
+          "Need to change the application name from : ${config.oldAndroidAppName} to ${config.newAppName}");
       requireChanges = true;
     }
 

@@ -14,7 +14,10 @@ class Config {
   final String newBundleId;
 
   final String newAppName;
-  final String oldAppName;
+  final String oldAndroidAppName;
+
+  /// We need to handle the case the user has deleted Android default strings file
+  final String oldIosAppName;
 
   final Map<String, String> oldI18nAppNames;
   final Map<String, String> newI18nAppNames;
@@ -31,7 +34,8 @@ class Config {
     this.oldBundleId,
     this.newBundleId,
     this.newAppName,
-    this.oldAppName,
+    this.oldAndroidAppName,
+    this.oldIosAppName,
     this.oldI18nAppNames,
     this.newI18nAppNames,
     this.oldDartPackageName,

@@ -26,7 +26,7 @@ class YamlArguments {
 Future<Config> getConfig() async {
   final String currentDartPackageName = await Utils.getCurrentDartPackageName();
 
-  final String oldAppName = await _loadAndroidAppName();
+  final String oldAppName = await _loadAppName();
   String newAppName = Utils.fromIdentifierToName(currentDartPackageName);
 
   final Map<String, dynamic> settings = _loadSettings();
@@ -81,7 +81,7 @@ Future<Config> getConfig() async {
 
   return Config(
     newAppName: newAppName,
-    oldAppName: oldAppName,
+    oldAndroidAppName: oldAppName,
     oldI18nAppNames: previousI18nNames,
     newI18nAppNames: newI18nNames,
     oldApplicationId: oldApplicationId,
@@ -158,11 +158,23 @@ Future<String> _loadAndroidPackageName() async {
   }
 }
 
-Future<String> _loadAndroidAppName() async {
+Future<String> _loadAppName() async {
   try {
-    return Utils.searchInFile(
+    final String androidAppName = await Utils.searchInFile(
       filePath: "android/app/src/main/res/values/strings.xml",
       pattern: RegExp('<string name="app_name">(.*)</string>'),
+    );
+
+    if (androidAppName != null && androidAppName.isNotEmpty) {
+      return androidAppName;
+    }
+
+    return await Utils.searchInFile(
+      filePath: "ios/Runner/Info.plist",
+      pattern: RegExp("""
+      <key>CFBundleName</key>
+	    <string>(.*)</string>
+      """),
     );
   } catch (error) {
     print("Error reading Manifest : $error");

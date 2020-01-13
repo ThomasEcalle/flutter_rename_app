@@ -9,10 +9,18 @@ changeAppNames(Config config) async {
 }
 
 _changeIosAppNames(Config config) async {
-  if (config.oldAppName != config.newAppName) {
+  if (config.oldAndroidAppName != null && config.oldAndroidAppName.isNotEmpty) {
+    if (config.oldAndroidAppName != config.newAppName) {
+      Utils.changeContentInFile(
+        "ios/Runner/Info.plist",
+        RegExp(config.oldAndroidAppName),
+        config.newAppName,
+      );
+    }
+  } else if (config.oldIosAppName != null && config.oldIosAppName.isNotEmpty) {
     Utils.changeContentInFile(
       "ios/Runner/Info.plist",
-      RegExp(config.oldAppName),
+      RegExp(config.oldIosAppName),
       config.newAppName,
     );
   }
@@ -98,11 +106,13 @@ _changeNameInValueDirectory(
     );
 
     if (result != null) {
-      await Utils.changeContentInFile(
-        valuesStringsPath,
-        RegExp('<string name="app_name">(.*)</string>'),
-        '<string name="app_name">$name</string>',
-      );
+      if (result != name) {
+        await Utils.changeContentInFile(
+          valuesStringsPath,
+          RegExp('<string name="app_name">(.*)</string>'),
+          '<string name="app_name">$name</string>',
+        );
+      }
     } else {
       /// TODO : Better handling of writing inside <resources>
       await Utils.changeContentInFile(

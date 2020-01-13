@@ -46,6 +46,9 @@ class Utils {
   /// Returns a String corresponding to [pattern] searched in a File
   static Future<String> searchInFile({String filePath, RegExp pattern}) async {
     final File file = File(filePath);
+
+    if (!file.existsSync()) return "";
+
     final String fileContent = file.readAsStringSync();
 
     final RegExpMatch match = pattern.firstMatch(fileContent);
