@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_rename_app/src/models/config.dart';
 import 'package:flutter_rename_app/src/utils/utils.dart';
-import 'package:xml/xml.dart' as xml;
 
 changeAppNames(Config config) async {
   await _changeAndroidAppNames(config);
@@ -29,14 +28,13 @@ _changeAndroidValues(Config config) async {
   final List<FileSystemEntity> resourcesEntities = androidResources.listSync();
 
   final Map<String, String> newI18nAppNames = config.newI18nAppNames;
+  final List<String> handledLangs = [];
 
   for (final FileSystemEntity resourceEntity in resourcesEntities) {
     final String resourceName = Utils.getFileName(resourceEntity.path);
 
     if (resourceName.contains("values") && resourceEntity is Directory) {
       final String lang = Utils.getLangFromAndroidValuesDir(resourceName);
-
-      print("topiqueur: ${resourceEntity.path}");
 
       /// if lang is null, then we are in the default values directory
       if (lang == null) {
@@ -61,8 +59,21 @@ _changeAndroidValues(Config config) async {
             stringsFilePath,
           );
         }
+
+        handledLangs.add(lang);
       }
     }
+  }
+
+  /// Getting names that we still need to put
+  newI18nAppNames.removeWhere((String key, _) => handledLangs.contains(key));
+
+  for (final String key in newI18nAppNames.keys) {
+    await _changeNameInValueDirectory(
+      newI18nAppNames,
+      "android/app/src/main/res/values-$key/strings.xml",
+      key,
+    );
   }
 }
 
@@ -78,8 +89,6 @@ _changeNameInValueDirectory(
   bool isDefault = false,
   String newDefaultName = "",
 }) async {
-  // TODO: Handle strings.xml existence, <resources> existence, etc.
-
   final File file = File(valuesStringsPath);
   final String name = isDefault ? newDefaultName : newI18nAppNames[lang];
   if (file.existsSync()) {
@@ -95,11 +104,12 @@ _changeNameInValueDirectory(
         '<string name="app_name">$name</string>',
       );
     } else {
-      final String stringsContent = File(valuesStringsPath).readAsStringSync();
-      final xml.XmlDocument document = xml.parse(stringsContent);
-      final List<xml.XmlElement> elements = document.findElements("resources").toList();
-      final xml.XmlElement resourcesElement = elements.first;
-      print("resourcesElement = $resourcesElement");
+      /// TODO : Better handling of writing inside <resources>
+      await Utils.changeContentInFile(
+        valuesStringsPath,
+        RegExp('</resources>'),
+        "    <string name=\"app_name\">$name</string>\n</resources>",
+      );
     }
   } else {
     file.createSync(recursive: true);

@@ -55,7 +55,7 @@ class Utils {
   /// Returns locale (en, fr, etc.)
   /// from android values directory name
   static String getLangFromAndroidValuesDir(String valuesDirName) {
-    final RegExpMatch match = RegExp("values-([a-zA-Z-]+)").firstMatch(valuesDirName);
+    final RegExpMatch match = RegExp("values-([a-zA-Z-_]+)").firstMatch(valuesDirName);
     return match?.group(1);
   }
 }
