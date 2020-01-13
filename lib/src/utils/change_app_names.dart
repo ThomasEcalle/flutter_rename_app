@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_rename_app/src/models/config.dart';
+import 'package:flutter_rename_app/src/utils/logger.dart';
 import 'package:flutter_rename_app/src/utils/utils.dart';
 
 changeAppNames(Config config) async {
@@ -130,6 +131,7 @@ _changeNameInValueDirectory(
 </resources>
     """;
     file.writeAsStringSync(content);
+    Logger.info("$valuesStringsPath", greenPart: "ADDED");
   }
 }
 
