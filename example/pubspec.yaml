@@ -31,7 +31,7 @@ dev_dependencies:
     path: ../
 
 flutter_rename_app:
-  application_name: example
+  application_name: totoro
   i18n_application_names:
     fr_FR: Mon appli
     en: My Applii
