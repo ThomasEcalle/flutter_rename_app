@@ -33,8 +33,8 @@ dev_dependencies:
 flutter_rename_app:
   application_name: Travel App
   i18n_application_names:
-    fr_FR: FR Application
-    fr_CH: Switz application
+    fr-FR: FR Application
+    fr-CH: Switz application
     en: My ApplicatioN
   dart_package_name: example
   application_id: com.thomasecalle.example
