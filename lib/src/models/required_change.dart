@@ -12,9 +12,9 @@ class RequiredChange {
   final bool needChanges;
 
   RequiredChange({
-    this.regexp,
-    this.replacement,
-    this.paths,
+    required this.regexp,
+    required this.replacement,
+    required this.paths,
     this.isDirectory = false,
     this.needChanges = true,
   });

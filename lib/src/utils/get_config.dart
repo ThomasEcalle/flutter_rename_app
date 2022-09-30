@@ -22,7 +22,7 @@ class YamlArguments {
 Future<Config> getConfig() async {
   final String currentDartPackageName = await Utils.getCurrentDartPackageName();
 
-  final String oldAppName = await _loadAndroidAppName();
+  final String oldAppName = await _loadAndroidAppName()??'';
   String newAppName = Utils.fromIdentifierToName(currentDartPackageName);
 
   final Map<String, dynamic> settings = _loadSettings();
@@ -91,7 +91,7 @@ Map<String, dynamic> _loadSettings() {
   return settings;
 }
 
-Future<String> _loadAndroidPackageName() async {
+Future<String?> _loadAndroidPackageName() async {
   try {
     return searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
@@ -103,7 +103,7 @@ Future<String> _loadAndroidPackageName() async {
   }
 }
 
-Future<String> _loadAndroidAppName() async {
+Future<String?> _loadAndroidAppName() async {
   try {
     return searchInFile(
       filePath: "android/app/src/main/AndroidManifest.xml",
@@ -115,7 +115,7 @@ Future<String> _loadAndroidAppName() async {
   }
 }
 
-Future<String> _loadAndroidApplicationId() async {
+Future<String?> _loadAndroidApplicationId() async {
   try {
     return searchInFile(
       filePath: "android/app/build.gradle",
@@ -127,7 +127,7 @@ Future<String> _loadAndroidApplicationId() async {
   }
 }
 
-Future<String> _loadBundleId() async {
+Future<String?> _loadBundleId() async {
   try {
     return searchInFile(
       filePath: "ios/Runner.xcodeproj/project.pbxproj",
@@ -139,11 +139,11 @@ Future<String> _loadBundleId() async {
   }
 }
 
-Future<String> searchInFile({String filePath, String pattern}) async {
+Future<String?> searchInFile({required String filePath, required String pattern}) async {
   final File file = File(filePath);
   final String fileContent = file.readAsStringSync();
   final RegExp regExp = RegExp(pattern);
 
-  final RegExpMatch match = regExp.firstMatch(fileContent);
-  return match.group(1);
+  final RegExpMatch? match = regExp.firstMatch(fileContent);
+  return match?.group(1);
 }

@@ -22,15 +22,15 @@ class Config {
   final String newAndroidPackageName;
 
   Config({
-    this.oldApplicationId,
-    this.newApplicationId,
-    this.oldBundleId,
-    this.newBundleId,
-    this.newAppName,
-    this.oldAppName,
-    this.oldDartPackageName,
-    this.newDartPackageName,
-    this.oldAndroidPackageName,
-    this.newAndroidPackageName,
+    required this.oldApplicationId,
+    required this.newApplicationId,
+    required this.oldBundleId,
+    required this.newBundleId,
+    required this.newAppName,
+    required this.oldAppName,
+    required this.oldDartPackageName,
+    required this.newDartPackageName,
+    required this.oldAndroidPackageName,
+    required this.newAndroidPackageName,
   });
 }
